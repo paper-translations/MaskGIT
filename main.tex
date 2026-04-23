@@ -6,11 +6,11 @@
 
 \setCJKmainfont[BoldFont=FZHei-B01,ItalicFont=FZKai-Z03]{FZShuSong-Z01}
 \newCJKfontfamily\kaitifont[BoldFont=FZHei-B01]{FZKai-Z03}
-\newcommand{\kaiti}{{\kaitifont\spacing{1.2}}}
+\newcommand{\kaiti}{\kaitifont\spacing{1.2}}
 \setstretch{1.5}
-\DeclareCaptionFont{kaiti}{\kaiti}
-\captionsetup{font+=kaiti}
-\captionsetup[sub]{font+=kaiti}
+% \DeclareCaptionFont{kaiti}{\kaiti}
+% \captionsetup{font+=kaiti}
+% \captionsetup[sub]{font+=kaiti}
 
 % Include other packages here, before hyperref.
 \usepackage{graphicx}
@@ -41,7 +41,7 @@
 \def\bestis{182.1}
 \def\bestfidhighres{7.32}
 
-\title{\model: Masked Generative Image Transformer}
+\title{\model: 掩码图像生成Transformer}
 
 \author{Huiwen Chang\quad Han Zhang\quad Lu Jiang\quad Ce Liu$^\ast$ \quad William T. Freeman\\
 \vspace{1.3ex}
@@ -70,7 +70,7 @@
 	\label{fig:teaser}
 \end{center}%
 }]
-\footnotetext{$^\ast$目前隶属于微软 Azure AI。}
+\footnotetext{$^\ast$目前隶属于微软Azure AI。}
 
 
 \input{0_abstract}

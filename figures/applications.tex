@@ -26,7 +26,7 @@
 
     \end{tabular}
     \vspace{-3mm}
-    \caption{\textbf{Class-conditional image editing.} Given input images on the left of each pair, and a target class "tiger cat", \model replaces the bounding boxed regions with tiger cats, suggesting the composition ability of our model. % The fact that the synthesized tiger cat blends in with the rest of the image seamlessly highlights the composition ability of our model. 
+    \caption{\textbf{类条件图像编辑。}给定每对左侧的输入图像和目标类别"老虎猫"，\model 用老虎猫替换边界框区域，体现了我们模型的组合能力。% The fact that the synthesized tiger cat blends in with the rest of the image seamlessly highlights the composition ability of our model.
     }
     \vspace{-2mm}
     \label{fig:editing}
@@ -66,7 +66,7 @@
     % Input & DeepFill & HiFill  & \multicolumn{3}{c}{------ \model (Our Samples) ------} & Groundtruth \\    
     \end{tabular}
     \vspace{-1mm}
-    \caption{\textbf{Inpainting and outpainting.} Given a single input image, \model synthesizes diverse results for inpainting (first row) and outpainting in different directions (last two rows).}
+    \caption{\textbf{图像修复与外推。}给定单个输入图像，\model 为修复（第一行）和不同方向的外推（最后两行）生成多样化结果。}
     \label{fig:uncrop_diversity}
     \vspace{-3mm}
 \end{figure}
@@ -123,7 +123,7 @@
     \end{tabular}
     }
 \vspace{-2mm}
-    \caption{\textbf{Quantitative Comparisons for Inpainting and Outpainting on Places2.} \footnotesize{$^{512}$ evaluated on 512$\times$512 samples while others evaluated on the corresponding 256$\times$256 ones, consistent with their training; $^\square$~taken from the prior work; $^\dagger$~evaluated using the released model trained on a subset of Places2; $^\blackdiamond$~evaluated using the TFHub model\cite{boundless_tfhub}.} }
+    \caption{\textbf{Places2 数据集上修复和外推的定量比较。}\footnotesize{$^{512}$ 在 512$\times$512 样本上评估，其他在相应的 256$\times$256 样本上评估，与其训练一致；$^\square$~取自先前的工作；$^\dagger$~使用在 Places2 子集上训练的已发布模型评估；$^\blackdiamond$~使用 TFHub 模型评估\cite{boundless_tfhub}。}}
     \label{tab:inpaint_uncrop}
     \vspace{-3mm}
 \end{table}
