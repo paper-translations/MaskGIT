@@ -5,7 +5,7 @@
 
 我们遵循第\ref{sec:related_synthesis}节讨论的两阶段方法，如图~\ref{fig:pipeline}所示。由于我们的目标是改进第二阶段，我们采用与VQGAN模型~\cite{Esser21vqgan}相同的第一阶段设置，并将分词步骤的潜在改进留给未来工作。
 
-对于第二阶段，我们提议通过\textit{掩盖视觉Token建模}（MVTM）学习双向Transformer。我们在第\ref{ssec:model}节介绍MVTM训练，在第\ref{ssec:decoding}节介绍采样程序。然后我们在第\ref{ssec:masking}节讨论掩盖设计的关键技术。 
+对于第二阶段，我们提议通过\textit{掩码视觉Token建模}（MVTM）学习双向Transformer。我们在第\ref{ssec:model}节介绍MVTM训练，在第\ref{ssec:decoding}节介绍采样程序。然后我们在第\ref{ssec:masking}节讨论掩码设计的关键技术。 
 
 
 \subsection{训练中的MVTM}
@@ -15,16 +15,16 @@
 \newcommand{\knownmask}[0]{{\overline{\mathbf{M}}}}
 设$\mathy=[y_i]_{i=1}^N$表示通过将图像输入VQ编码器得到的潜在token，其中$N$是重塑token矩阵的长度，$\unknownmask=[m_i]_{i=1}^N$是相应的二进制掩码。在训练期间，我们采样token的子集并用特殊的\texttt{[MASK]}token替换它们。如果$m_i=1$，token $y_i$被替换为\texttt{[MASK]}，否则当$m_i=0$时，$y_i$保持不变。
 
-采样程序由掩盖调度函数$\gamma (r) \in (0,1]$参数化，执行如下：我们首先从0到1采样一个比例，然后在$\mathy$中均匀选择$\lceil \gamma(r) \cdot N \rceil$个token来放置掩码，其中$N$是长度。掩盖调度显著影响图像生成的质量，将在第\ref{ssec:masking}节讨论。
+采样程序由掩码调度函数$\gamma (r) \in (0,1]$参数化，执行如下：我们首先从0到1采样一个比例，然后在$\mathy$中均匀选择$\lceil \gamma(r) \cdot N \rceil$个token来放置掩码，其中$N$是长度。掩码调度显著影响图像生成的质量，将在第\ref{ssec:masking}节讨论。
 
 记$Y_{\knownmask}$为对$\mathy$应用掩码$\unknownmask$后的结果。
-训练目标是最小化掩盖token的负对数似然：
+训练目标是最小化掩码token的负对数似然：
 \begin{equation}
 \label{eq:loss}
 \mathcal{L}_{\text{mask}} = - \mathop{\mathbb{E}} \limits_{\mathy  \in \mathcal{D}} \Big[ \sum_{\forall i \in [1,N], m_i=1} \log p(y_i| Y_{\knownmask}) \Big],
 \end{equation}
 
-\noindent 具体地，我们将掩盖的$Y_{\knownmask}$输入到多层双向Transformer中，以预测每个掩盖token的概率$P(y_i | Y_{\knownmask} )$，其中负对数似然计算为地面真实独热token和预测token之间的交叉熵。
+\noindent 具体地，我们将掩码的$Y_{\knownmask}$输入到多层双向Transformer中，以预测每个掩码token的概率$P(y_i | Y_{\knownmask} )$，其中负对数似然计算为地面真实独热token和预测token之间的交叉熵。
 注意与自回归建模的关键区别：MVTM中的条件依赖有两个方向，这允许图像生成通过关注图像中的所有token来利用更丰富的上下文。
 
 \subsection{迭代解码}
@@ -32,15 +32,15 @@
 在自回归解码中，token基于先前生成的输出顺序生成。这个过程不可并行化，因此对于图像来说非常慢，因为图像token长度（例如256或1024）通常远大于语言的长度。我们引入了一种新型解码方法，其中图像中的所有token同时并行生成。这由于MTVM的双向自注意力而可行。
 
 理论上，我们的模型能够在单个通道中推断所有token并生成整个图像。我们发现这与训练任务的不一致具有挑战性。下面介绍提议的迭代解码。
-在推理时生成图像，我们从所有token都被掩盖的空白画布开始，即$Y_\unknownmask^{(0)}$。对于迭代$t$，我们的算法执行如下：
+在推理时生成图像，我们从所有token都被掩码的空白画布开始，即$Y_\unknownmask^{(0)}$。对于迭代$t$，我们的算法执行如下：
 
  \vspace{-2mm}
  \begin{enumerate}
-     \item \textbf{预测。}给定当前迭代中的掩盖token $Y_\unknownmask^{(t)}$，我们的模型并行预测所有掩盖位置的概率，记为$p^{(t)} \in \mathbb{R}^{N \times K}$。\\ \vspace{-5mm}
-     \item \textbf{采样。}在每个掩盖位置$i$，我们根据其对码本中所有可能token的预测概率$p_i^{(t)} \in \mathbb{R}^K$采样一个token $y_i^{(t)}$。采样一个token $y_i^{(t)}$后，其相应的预测得分被用作``信心''得分，表示模型对该预测的信度。
-     对于$Y_\unknownmask^{(t)}$中的未掩盖位置，我们简单地将其信心得分设置为$1.0$。\\ \vspace{-5mm}
-    \item \textbf{掩盖计划。}我们根据掩盖调度函数$\gamma$计算要掩盖的token数量，即$n = \lceil \gamma(\frac{t}{T}) N \rceil$，其中$N$是输入长度，$T$是迭代总数。
-    \item \textbf{掩盖。}我们通过掩盖$Y_\unknownmask^{(t)}$中的$n$个token来获得$Y_\unknownmask^{(t+1)}$。迭代$t+1$的掩码$\unknownmask^{(t+1)}$计算为：\vspace{-2mm}
+     \item \textbf{预测。}给定当前迭代中的掩码token $Y_\unknownmask^{(t)}$，我们的模型并行预测所有掩码位置的概率，记为$p^{(t)} \in \mathbb{R}^{N \times K}$。\\ \vspace{-5mm}
+     \item \textbf{采样。}在每个掩码位置$i$，我们根据其对码本中所有可能token的预测概率$p_i^{(t)} \in \mathbb{R}^K$采样一个token $y_i^{(t)}$。采样一个token $y_i^{(t)}$后，其相应的预测得分被用作``信心''得分，表示模型对该预测的信度。
+     对于$Y_\unknownmask^{(t)}$中的未掩码位置，我们简单地将其信心得分设置为$1.0$。\\ \vspace{-5mm}
+    \item \textbf{掩码调度。}我们根据掩码调度函数$\gamma$计算要掩码的token数量，即$n = \lceil \gamma(\frac{t}{T}) N \rceil$，其中$N$是输入长度，$T$是迭代总数。
+    \item \textbf{掩码。}我们通过掩码$Y_\unknownmask^{(t)}$中的$n$个token来获得$Y_\unknownmask^{(t+1)}$。迭代$t+1$的掩码$\unknownmask^{(t+1)}$计算为：\vspace{-2mm}
         \begin{equation*}
          m_{i}^{(t+1)} =
         \begin{cases}
@@ -53,27 +53,27 @@
  \end{enumerate}
 
 
-解码算法在$T$步内合成图像。在每次迭代中，模型同时预测所有token但仅保留最有信心的token。剩余的token被掩盖，在下一次迭代中重新预测。掩盖比例逐渐降低，直到在$T$次迭代内生成所有token。在实践中，掩盖token通过温度退火随机采样，以鼓励更多多样性，我们将在第\ref{ssec:ablation}节讨论其效果。图~\ref{fig:decoding}展示了我们解码过程的一个例子。它在$T=8$次迭代中生成图像，其中每次迭代的未掩盖token在网格中突出显示，例如当$t=1$时，我们仅保留1个token并掩盖其余的。
+解码算法在$T$步内合成图像。在每次迭代中，模型同时预测所有token但仅保留最有信心的token。剩余的token被掩码，在下一次迭代中重新预测。掩码比例逐渐降低，直到在$T$次迭代内生成所有token。在实践中，掩码token通过温度退火随机采样，以鼓励更多多样性，我们将在第\ref{ssec:ablation}节讨论其效果。图~\ref{fig:decoding}展示了我们解码过程的一个例子。它在$T=8$次迭代中生成图像，其中每次迭代的未掩码token在网格中突出显示，例如当$t=1$时，我们仅保留1个token并掩码其余的。
 
-\subsection{掩盖设计}
+\subsection{掩码设计}
 \label{ssec:masking}
 
-我们发现图像生成的质量受到掩盖设计的显著影响。我们通过掩盖调度函数$\gamma (\cdot)$建模掩盖过程，该函数计算给定潜在token的掩盖比例。如前所述，函数$\gamma$用于训练和推理。在推理时，它接收$0/T, 1/T, \cdots, (T-1)/T$的输入，表示解码的进度。在训练中，我们随机采样$[0,1)$中的比例$r$来模拟各种解码场景。
+我们发现图像生成的质量受到掩码设计的显著影响。我们通过掩码调度函数$\gamma (\cdot)$建模掩码过程，该函数计算给定潜在token的掩码比例。如前所述，函数$\gamma$用于训练和推理。在推理时，它接收$0/T, 1/T, \cdots, (T-1)/T$的输入，表示解码的进度。在训练中，我们随机采样$[0,1)$中的比例$r$来模拟各种解码场景。
 
-BERT使用固定的15\%掩盖比例~\cite{Devlin19bert}，即，它总是掩盖15\%的token，这对于我们的任务不合适，因为我们的解码器需要从零开始生成图像。因此需要新的掩盖调度。在讨论具体方案之前，我们首先检查掩盖调度函数的性质。首先，$\gamma(r)$需要是对$r \in [0,1]$在0和1之间有界的连续函数。其次，$\gamma(r)$应该关于$r$（单调）递减，并且满足$\gamma(0)\rightarrow1$和$\gamma(1)\rightarrow0$。
+BERT使用固定的15\%掩码比例~\cite{Devlin19bert}，即，它总是掩码15\%的token，这对于我们的任务不合适，因为我们的解码器需要从零开始生成图像。因此需要新的掩码调度。在讨论具体方案之前，我们首先检查掩码调度函数的性质。首先，$\gamma(r)$需要是对$r \in [0,1]$在0和1之间有界的连续函数。其次，$\gamma(r)$应该关于$r$（单调）递减，并且满足$\gamma(0)\rightarrow1$和$\gamma(1)\rightarrow0$。
 第二个性质确保我们解码算法的收敛性。
 
 
 本文考虑了常见的函数，并进行了简单的变换以满足这些性质。图~\ref{fig:scheduling}可视化了这些函数，它们被分为三组：
 \begin{itemize}
     \vspace{-2mm}
-    \item \textbf{线性函数}是一个直接的解决方案，每次掩盖相等数量的token。
+    \item \textbf{线性函数}是一个直接的解决方案，每次掩码相等数量的token。
     \vspace{-2mm}
-    \item \textbf{凹函数}捕捉了图像生成遵循从少到多的信息流的直觉。在开始时，大多数token被掩盖，所以模型只需要做出少数几个模型有信心的正确预测。到最后，掩盖比例急剧下降，迫使模型做出更多正确预测。有效信息在这个过程中增加。凹函数族包括余弦、平方、三次方和指数。
+    \item \textbf{凹函数}捕捉了图像生成遵循从少到多的信息流的直觉。在开始时，大多数token被掩码，所以模型只需要做出少数几个模型有信心的正确预测。到最后，掩码比例急剧下降，迫使模型做出更多正确预测。有效信息在这个过程中增加。凹函数族包括余弦、平方、三次方和指数。
     \vspace{-2mm}
     \item \textbf{凸函数}相反地实现了从多到少的过程。模型需要在最初的几次迭代内完成绝大多数token。这个族包括平方根和对数。
 
     \vspace{-2mm}
 \end{itemize}
 
-我们在第\ref{ssec:ablation}节中经验性地比较了上述掩盖调度函数，发现$\text{cosine}$函数在我们所有实验中表现最好。
+我们在第\ref{ssec:ablation}节中经验性地比较了上述掩码调度函数，发现$\text{cosine}$函数在我们所有实验中表现最好。

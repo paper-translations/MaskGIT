@@ -21,10 +21,10 @@
 
 \noindent 在第二阶段，它首先使用深度自回归模型预测视觉token的潜在先验，然后使用第一阶段的解码器将token序列映射到图像像素。由于两阶段方法的有效性，许多方法都遵循了这个范式。DALL-E~\cite{Ramesh21dalle}使用Transformer~\cite{Vaswani17attention}来改进第二阶段的token预测。VQGAN~\cite{Esser21vqgan}在第一阶段添加了对抗损失和感知损失~\cite{johnson2016perceptual, zhang2018unreasonable}来改进图像保真度。与我们同期的工作VIM~\cite{vim2021}提议使用VIT骨干~\cite{dosovitskiy2021vit}来进一步改进分词阶段。由于这些方法仍然采用自回归模型，第二阶段的解码时间随token序列长度而变化。 
 
-\subsection{具有双向Transformer的掩盖建模}
+\subsection{具有双向Transformer的掩码建模}
 Transformer架构~\cite{Vaswani17attention}最初在自然语言处理中被提出，最近已扩展到计算机视觉~\cite{dosovitskiy2021vit, caron2021dino}。
 Transformer由多个自注意力层组成，允许捕获序列中所有元素对之间的交互。
-特别是，BERT~\cite{Devlin19bert}引入了掩盖语言建模（MLM）任务用于语言表示学习。BERT~\cite{Devlin19bert}中使用的双向自注意力允许使用来自两个方向的上下文来预测MLM中的掩盖token。
-在视觉中，BERT~\cite{Devlin19bert}中的掩盖建模已扩展到图像表示学习~\cite{he2021mae, Bao2022Beit}，其中图像被量化为离散token。然而，很少有工作成功地将相同的掩盖建模应用于图像生成~\cite{zhang2021ufcbert}，因为使用双向注意进行自回归解码很困难。
-据我们所知，本文提供了第一个证据，证明了掩盖建模对于在常见ImageNet基准上的图像生成的有效性。
-我们的工作受到自然语言处理中的双向机器翻译~\cite{ghazvininejad2019maskpredict, gu2020fully, gu2017non}的启发，我们的新颖性在于提议的新掩盖策略和解码算法，如我们的实验所证实的，这些对图像生成至关重要。
+特别是，BERT~\cite{Devlin19bert}引入了掩码语言建模（MLM）任务用于语言表示学习。BERT~\cite{Devlin19bert}中使用的双向自注意力允许使用来自两个方向的上下文来预测MLM中的掩码token。
+在视觉中，BERT~\cite{Devlin19bert}中的掩码建模已扩展到图像表示学习~\cite{he2021mae, Bao2022Beit}，其中图像被量化为离散token。然而，很少有工作成功地将相同的掩码建模应用于图像生成~\cite{zhang2021ufcbert}，因为使用双向注意进行自回归解码很困难。
+据我们所知，本文提供了第一个证据，证明了掩码建模对于在常见ImageNet基准上的图像生成的有效性。
+我们的工作受到自然语言处理中的双向机器翻译~\cite{ghazvininejad2019maskpredict, gu2020fully, gu2017non}的启发，我们的新颖性在于提议的新掩码策略和解码算法，如我们的实验所证实的，这些对图像生成至关重要。
