@@ -1,7 +1,7 @@
 
-\begin{abstract}
+\begin{abstract}\kaiti
 
-Generative transformers have experienced rapid popularity growth in the computer vision community in synthesizing high-fidelity and high-resolution images. The best generative transformer models so far, however, still treat an image naively as a sequence of tokens, and decode an image sequentially following the raster scan ordering (i.e. line-by-line). We find this strategy neither optimal nor efficient. This paper proposes a novel image synthesis paradigm using a bidirectional transformer decoder, which we term MaskGIT. During training, MaskGIT learns to predict randomly masked tokens by attending to tokens in all directions. At inference time, the model begins with generating all tokens of an image simultaneously, and then refines the image iteratively conditioned on the previous generation. Our experiments demonstrate that MaskGIT significantly outperforms the state-of-the-art transformer model on the ImageNet dataset, and accelerates autoregressive decoding by up to 64x. Besides, we illustrate that MaskGIT can be easily extended to various image editing tasks, such as inpainting, extrapolation, and image manipulation. 
+生成式Transformer在计算机视觉社区中因其合成高保真、高分辨率图像而获得了快速的关注。然而，迄今为止最好的生成式Transformer模型仍然将图像幼稚地视为一系列token，并按照光栅扫描顺序（即逐行）进行顺序解码。我们发现这种策略既不最优也不高效。本文提出了一种使用双向Transformer解码器的新型图像合成范式，我们称之为MaskGIT。在训练期间，MaskGIT学习通过从所有方向关注token来预测随机掩盖的token。在推理时，模型首先同时生成图像的所有token，然后根据之前的生成结果迭代地细化图像。我们的实验表明，MaskGIT在ImageNet数据集上明显优于最先进的Transformer模型，并将自回归解码加速多达64倍。此外，我们展示了MaskGIT可以轻松扩展到各种图像编辑任务，例如图像修复、外推和图像操纵。 
 
 
 \end{abstract}

@@ -2,30 +2,30 @@
 \section{Experiments}
 \label{sec:experiments}
 
-In this section, we empirically evaluate \model on image generation in terms of quality, efficiency and flexibility.
-In \ref{ssec:class_conditional_synthesis}, we evaluate \model on the standard class-conditional image generation tasks on ImageNet~\cite{deng2009imagenet} 256$\times$256 and 512$\times$512.
-In~\ref{ssec:applications}, we show \model's versatility by demonstrating its performance on three image editing tasks, image inpainting, outpainting, and editing. In~\ref{ssec:ablation}, we verify the necessity of our design of mask scheduling. We will release the code and model for reproducible research.
+在本节中，我们从质量、效率和灵活性三个方面对\model进行了实验评估。
+在第\ref{ssec:class_conditional_synthesis}节，我们在ImageNet~\cite{deng2009imagenet} 256$\times$256和512$\times$512上评估了\model的标准类条件图像生成任务。
+在第\ref{ssec:applications}节，我们通过展示\model在三个图像编辑任务上的性能，包括图像修复、外推和编辑，来展示\model的多功能性。在第\ref{ssec:ablation}节，我们验证了我们的掩盖调度设计的必要性。我们将发布代码和模型以实现可重复的研究。
 
 
-\subsection{Experimental Setup}
+\subsection{实验设置}
 \label{ssec:architecture}
 
-For each dataset, we only train a single autoencoder, decoder, and codebook with 1024 tokens on cropped 256x256 images for all the experiments. The image is always compressed by a fixed factor of 16, \ie from $H\times W$ to a grid of tokens in the size of $h \times w$, where $h$=$H / 16$ and $w$=$W/16$. We find that this autoencoder, together with the codebook, can be reused to synthesize 512$\times$512 images.
+对于每个数据集，我们仅训练单个自编码器、解码器和具有1024个token的码本，用于在裁剪的256x256图像上进行所有实验。图像始终以固定的16倍因子压缩，即从$H\times W$到大小为$h \times w$的token网格，其中$h$=$H / 16$且$w$=$W/16$。我们发现这个自编码器与码本可以被重复使用来合成512$\times$512图像。
 
-All models in this work have the same configuration: 24 layers, 8 attention heads, 768 embedding dimensions and 3072 hidden dimensions. Our models use learnable positional embedding\cite{Vaswani17attention}, LayerNorm\cite{ba2016layer}, and truncated normal initialization (stddev=$0.02$). We employ the following training hyperparameters: label smoothing=$0.1$, dropout rate=$0.1$, Adam optimizer~\cite{kingma2014adam} with $\beta_{1}$=$0.9$ and $\beta_{2}$=$0.96$. We use RandomResizeAndCrop for data augmentation. All models are trained on 4x4 TPU devices with a batch size of 256. ImageNet models are trained for 300 epochs while the Places2 model is trained for 200 epochs. 
+本工作中的所有模型都有相同的配置：24层、8个注意力头、768个嵌入维度和3072个隐藏维度。我们的模型使用可学习的位置嵌入~\cite{Vaswani17attention}、LayerNorm~\cite{ba2016layer}和截断正态初始化（标准差=$0.02$）。我们采用以下训练超参数：标签平滑=$0.1$、dropout率=$0.1$、Adam优化器~\cite{kingma2014adam}，其中$\beta_{1}$=$0.9$且$\beta_{2}$=$0.96$。我们使用RandomResizeAndCrop进行数据增强。所有模型都在4x4 TPU设备上以256的批大小进行训练。ImageNet模型训练300个epochs，而Places2模型训练200个epochs。 
 
-\subsection{Class-conditional Image Synthesis}
+\subsection{类条件图像合成}
 \label{ssec:class_conditional_synthesis}
 
-We evaluate the performance of our model on class-conditional image synthesis on ImageNet 256$\times$256 and 512$\times$512. Our main results are summarized in Table~\ref{tab:maintable}.
+我们在ImageNet 256$\times$256和512$\times$512上评估我们模型的类条件图像合成性能。我们的主要结果总结在表~\ref{tab:maintable}中。
 
-\noindent\textbf{Quality.}
-On ImageNet 256$\times$256, without any special sampling strategies such as beam-search, top-k or nucleus sampling heuristics~\cite{holtzman2019nucleus} or classifier guidance~\cite{Razavi19vqvae2}, we significantly outperform VQGAN~\cite{Esser21vqgan} in both Fr\'{e}chet Inception Distance (FID)~\cite{FID} ($\bestfid$ vs $15.78$) and Inception Score (IS) ($\bestis$ vs $78.3$). We also report the results with classifier-based rejection sampling in the appendix \ref{sec:supp_diversity_comparison}. 
+\noindent\textbf{质量。}
+在ImageNet 256$\times$256上，不使用任何特殊的采样策略，如beam-search、top-k或nucleus采样启发式~\cite{holtzman2019nucleus}或分类器引导~\cite{Razavi19vqvae2}，我们在Fréchet Inception Distance（FID）~\cite{FID}（$\bestfid$对比$15.78$）和Inception Score（IS）（$\bestis$对比$78.3$）两方面都显著超越VQGAN~\cite{Esser21vqgan}。我们也在附录\ref{sec:supp_diversity_comparison}中报告了使用基于分类器的拒绝采样的结果。
 
 %
-We also train a VQGAN baseline with the same tokenizer and hyperparameters as \model's in order to further highlight the difference between bi-directional and uni-directional transformers, and find that on both resolutions, \model still outperforms our implemented baseline by a significant margin. 
+我们还训练了一个与\model使用相同分词器和超参数的VQGAN基线，以进一步突出双向和单向Transformer之间的差异，我们发现在两种分辨率上，\model仍然显著优于我们实现的基线。
 
-Furthermore, \model improves BigGAN's FIDs on both resolutions, achieving a new state-of-the-art on 512$\times$512 with an FID of $7.32$.
+此外，\model在两种分辨率上改进了BigGAN的FID，在512$\times$512上实现了新的最先进技术，FID为$7.32$。
 
 \input{figures/runtime_table}
 {
@@ -34,68 +34,68 @@ Furthermore, \model improves BigGAN's FIDs on both resolutions, achieving a new 
 }
 
 \input{figures/applications}
-\noindent\textbf{Speed.} 
-We evaluate model speed by assessing the number of steps, \ie forward passes, each model requires to generate a sample. As shown in Table~\ref{tab:maintable}, \model requires the fewest steps among all non-GAN-based models on both resolutions.
+\noindent\textbf{速度。}
+我们通过评估每个模型生成样本所需的步数（即前向通过）来评估模型速度。如表~\ref{tab:maintable}所示，\model在两种分辨率上都是所有非GAN模型中需要步数最少的。
 
-To further substantiate the speed difference between \model and autoregressive models, we perform a runtime comparison between \model and VQGAN's decoding processes. As illustrated in Figure~\ref{fig:speed}, \model significantly accelerates VQGAN by $30$-$64$x, with a speedup that gets more pronounced as the image resolution (and thus the input token length) grows.
-
-
-\noindent\textbf{Diversity.} We consider Classification Accuracy Score (CAS) \cite{Ravuri19CAS} and Precision/Recall~\cite{KynkaanniemiKLL19} as two metrics for evaluating sample diversity, in addition to sample quality.
-
-CAS involves first training a ResNet-50 classifier\cite{ResNet} solely on the samples generated by the candidate model, and then measuring the classifier's classification accuracy on the ImageNet validation set.
-The last two columns in Table~\ref{tab:maintable} present the CAS results, where the scores of the classifier trained on real ImageNet training data are included for reference (76.6\% and 93.1\% for the top-1 and top-5 accuracy). For image resolution 256$\times$256,  we follow the common practice of using data augmentation RandAugment\cite{cubuk2019randaugment}, and report the scores trained without augmentation in the appendix ~\ref{sec:supp_diversity_comparison}. We find that \model significantly outperforms prior work VQVAE-2 and VQGAN, establishing a new state-of-the-art of CAS on the ImageNet benchmark on both resolutions.
+为了进一步证实\model和自回归模型之间的速度差异，我们对\model和VQGAN的解码过程进行了运行时间比较。如图~\ref{fig:speed}所示，\model显著加速了VQGAN $30$-$64$倍，随着图像分辨率（以及输入token长度）的增加，加速比变得更加明显。
 
 
-The Precision/Recall results in Table~\ref{tab:maintable} show that \model achieves better coverage (Recall) compared to BigGAN, and better sample quality (Precision) compared to likelihood-based models such as VQVAE-2 and diffusion models. Compared to our baseline VQGAN, we improve the diversity as measured by recall while slightly boosting its precision. 
+\noindent\textbf{多样性。}我们除了样本质量外，还考虑分类准确性得分（CAS）~\cite{Ravuri19CAS}和精确度/召回~\cite{KynkaanniemiKLL19}作为评估样本多样性的两个指标。
 
-In contrast to BigGAN’s samples, \model's samples are more diverse with more varied lighting, poses, scales and context as shown in Figure~\ref{fig:diversity}. More comparisons are available in the appendix ~\ref{sec:supp_diversity_comparison}.
+CAS涉及首先仅在候选模型生成的样本上训练ResNet-50分类器~\cite{ResNet}，然后在ImageNet验证集上测量分类器的分类准确度。
+表~\ref{tab:maintable}中的最后两列呈现了CAS结果，其中包含在真实ImageNet训练数据上训练的分类器的得分作为参考（top-1和top-5准确度分别为76.6\%和93.1\%）。对于256$\times$256的图像分辨率，我们遵循使用数据增强RandAugment~\cite{cubuk2019randaugment}的常见做法，并在附录~\ref{sec:supp_diversity_comparison}中报告不进行增强训练的得分。我们发现\model显著优于之前的工作VQVAE-2和VQGAN，在两种分辨率上的ImageNet基准上建立了新的CAS最先进技术。
 
-\subsection{Image Editing Applications}
+
+表~\ref{tab:maintable}中的精确度/召回结果表明\model与BigGAN相比实现了更好的覆盖（召回），与VQVAE-2和扩散模型等基于似然的模型相比实现了更好的样本质量（精确度）。与我们的基线VQGAN相比，我们通过召回改进了多样性，同时略微提高了其精确度。
+
+与BigGAN的样本相比，\model的样本更加多样化，具有更多样的照明、姿态、比例和上下文，如图~\ref{fig:diversity}所示。更多比较可在附录~\ref{sec:supp_diversity_comparison}中获得。
+
+\subsection{图像编辑应用}
 \label{ssec:applications}
-In this subsection, we present direct applications of \model on three image editing tasks: class-conditional image editing, image inpainting, and outpainting. All three tasks can be almost trivially translated to ones that \model can handle if we consider the task as just a constraint on the initial binary mask $\unknownmask$ \model uses in its iterative decoding, as discussed in ~\ref{ssec:decoding}. We show that without modifications to the architecture or any task-specific training, \model is capable of generating very compelling results on all three applications. Furthermore, \model obtains comparable performance to dedicated models on both inpainting and outpainiting, even though it is not designed specifically for either task.
+在本小节中，我们展示\model在三个图像编辑任务上的直接应用：类条件图像编辑、图像修复和外推。如果我们将任务视为对\model在迭代解码中使用的初始二进制掩码$\unknownmask$的约束，所有这三个任务几乎都可以微不足道地转换为\model可以处理的任务，如第~\ref{ssec:decoding}节所讨论的。我们展示了在不对架构或任何特定任务训练进行修改的情况下，\model能够在所有三个应用上生成非常令人信服的结果。此外，\model在修复和外推上都获得了与专门模型相当的性能，尽管它不是专门为这两个任务设计的。
 
-\noindent\textbf{Class-conditional Image Editing.}
-We define a new class-conditional image editing task to showcase \model's flexibility. In this task, the model regenerates content specified inside a bounding box on the given class while preserving the context, \ie content outside of the box. It is infeasible for autoregressive methods due to the violation to their prediction orders.
+\noindent\textbf{类条件图像编辑。}
+我们定义了一个新的类条件图像编辑任务来展示\model的灵活性。在这个任务中，模型根据给定的类重新生成边界框内指定的内容，同时保留上下文，即框外的内容。由于违反预测顺序，这对自回归方法来说是不可行的。
 
-For \model, however, it is a trivial task if we consider the bounding box region as the input of initial mask to the iterative decoding algorithm. Figure~\ref{fig:editing} shows a few example results. More can be found in the appendix ~\ref{sec:supp_image_editing}.
+但是，对于\model，如果我们将边界框区域视为迭代解码算法的初始掩码的输入，这就是一个简单的任务。图~\ref{fig:editing}展示了一些例子结果。更多内容可在附录~\ref{sec:supp_image_editing}中找到。
 
-In these examples, we observe that \model can reasonably replace the selected object while preserving, or to some extend even completing, the context in the background. Furthermore, we find that \model seems to be capable of synthesizing unnatural yet plausible combinations unseen in the ImageNet training set, \eg a flying cat, cat in a soup bowl, and cat in a flower. This suggests that \model has incidentally learned useful representations for composition, which may be further exploited in related tasks in future works.
+在这些例子中，我们观察到\model可以合理地替换所选对象，同时保留或在某种程度上甚至完成背景中的上下文。此外，我们发现\model似乎能够合成在ImageNet训练集中未见过的不自然但可信的组合，例如飞行的猫、汤碗中的猫和花中的猫。这表明\model偶然学到了用于组成的有用表示，这可能在未来的相关任务中进一步被利用。
 
 \vspace{2mm}
-\noindent\textbf{Image Inpainting.}
+\noindent\textbf{图像修复。}
 \label{ssec:inpainting}
-Image inpainting or image completion is a fundamental image editing task to synthesize contents in missing regions so that the completion looks visually realistic. Traditional patch-based methods\cite{Barnes:2009:patchmatch} work well on texture regions, while deep learning based methods\cite{yu2019free, yi2020contextual, zhao2021comodgan, saharia2021palette, esser2021imagebart} have been demonstrated to synthesize images requiring better semantic coherence. Both approaches have been are extensively studied in computer vision.
+图像修复或图像补全是一项基本的图像编辑任务，旨在合成缺失区域中的内容，使补全看起来在视觉上逼真。传统的基于补丁的方法~\cite{Barnes:2009:patchmatch}在纹理区域上效果很好，而深度学习的方法~\cite{yu2019free, yi2020contextual, zhao2021comodgan, saharia2021palette, esser2021imagebart}已被证明能合成需要更好语义一致性的图像。这两种方法都在计算机视觉中得到了广泛的研究。
 
-We extend \model to this problem by tokenizing the masked image and interpreting the inpainting mask as the initial mask in our iterative decoding. We then composite the output image by linearly blending it with the input based on the masking boundary following \cite{cheng2021inout}.
-To match the training of our baselines, we train \model on the 512$\times$512 center-cropped images from the Places2\cite{zhou2017places} dataset. All hyperparameters are kept the same as the \model model trained on ImageNet.
+我们通过对掩盖的图像进行分词并将修复掩码解释为迭代解码中的初始掩码，将\model扩展到这个问题。然后，我们通过根据掩盖边界线性混合输出图像与输入来合成输出图像，遵循~\cite{cheng2021inout}。
+为了匹配我们的基线的训练，我们在Places2~\cite{zhou2017places}数据集的512$\times$512中心裁剪图像上训练\model。所有超参数都与在ImageNet上训练的\model模型保持一致。
 
-We compare \model against common GAN-based baselines, including DeepFillv2\cite{yu2019free} and HiFill\cite{yi2020contextual}, on inpainting with a central 50\% $\times$ 50\% mask, which are evaluated on the Places2 validation set. Table~\ref{tab:inpaint_uncrop} summarizes the quantitative comparisons. \model beats both DeepFill and HiFill in FID and IS by a significant margin, while achieving scores close to the state-of-the-art inpainting approach CoModGAN~\cite{zhao2021comodgan}. We show more qualitative comparisons with CoModGAN in the appendix ~\ref{sec:supp_inpainting_and_outpainting_comparison_with_gans}.
+我们将\model与常见的基于GAN的基线进行比较，包括DeepFillv2~\cite{yu2019free}和HiFill~\cite{yi2020contextual}，进行具有中央50\% $\times$ 50\%掩码的修复，在Places2验证集上评估。表~\ref{tab:inpaint_uncrop}总结了定量比较。\model在FID和IS上都显著超越了DeepFill和HiFill，同时达到了接近最先进的修复方法CoModGAN~\cite{zhao2021comodgan}的得分。我们在附录~\ref{sec:supp_inpainting_and_outpainting_comparison_with_gans}中展示了与CoModGAN的更多定性比较。
 
 
 \vspace{2mm}
-\noindent\textbf{Image Outpainting.}
+\noindent\textbf{图像外推。}
 \label{ssec:outpainting}
-Outpainting, or image extrapolation, is an image editing task that has received increased attention recently. It is seen as a more challenging task than inpainting due to the fewer constraints from surrounding pixels and thus more uncertainty in the predicted regions. Our adaptation of the problem and the model used in the following evaluation is the same as in inpainting.
+外推或图像外推是一项图像编辑任务，最近获得了更多关注。由于来自周围像素的约束较少，因此预测区域中的不确定性更大，被看作比修复更具挑战性的任务。我们对问题的适应和模型的使用与修复中相同。
 
-We compare against common GAN-based baselines, including Boundless~\cite{teterwak2019boundless}, In\&Out~\cite{cheng2021inout}, InfinityGAN\cite{lin2021infinitygan}, and CoModGAN\cite{zhao2021comodgan} on extrapolating rightward with a 50\% ratio. We evaluate on the image set generously provided by the authors of InfinityGAN\cite{lin2021infinitygan} and In\&Out\cite{cheng2021inout}.
+我们与常见的基于GAN的基线进行比较，包括Boundless~\cite{teterwak2019boundless}、In\&Out~\cite{cheng2021inout}、InfinityGAN~\cite{lin2021infinitygan}和CoModGAN~\cite{zhao2021comodgan}，进行向右外推50\%比例的操作。我们在InfinityGAN~\cite{lin2021infinitygan}和In\&Out~\cite{cheng2021inout}的作者慷慨提供的图像集上进行评估。
 
-Table~\ref{tab:inpaint_uncrop} summarizes the quantitative comparisons. \model beats all baselines and achieves state-of-the-art FID and IS. As the examples in Figure~\ref{fig:uncrop_diversity} illustrate, \model is also capable of synthesizing diverse results given the same input with different seeds. We observe that \model completes objects and global structures particularly well, and hypothesize that this is thanks to the model learning useful representations with the global attentions in the transformer.
+表~\ref{tab:inpaint_uncrop}总结了定量比较。\model超越所有基线并实现了最先进的FID和IS。如图~\ref{fig:uncrop_diversity}中的例子所示，\model也能够在给定相同输入但不同种子的情况下合成多样化的结果。我们观察到\model特别擅长完成对象和全局结构，并假设这是因为模型通过Transformer中的全局注意力学到了有用的表示。
 
-\subsection{Ablation Studies}
+\subsection{消融研究}
 \input{figures/ablation_1}
 \label{ssec:ablation}
-We conduct ablation experiments using the default setting on ImageNet 256$\times$256.
+我们在ImageNet 256$\times$256上使用默认设置进行消融实验。
 
-\noindent{\textbf{Mask scheduling.}}
-A key design of \model is the mask scheduling function used in both training and iterative decoding. We compare the functions discussed in ~\ref{ssec:masking}, visualize them in Figure~\ref{fig:scheduling}, and summarize the results in Table~\ref{tab:ablation}.
+\noindent{\textbf{掩盖计划。}}
+\model的关键设计是在训练和迭代解码中使用的掩盖调度函数。我们比较了在第~\ref{ssec:masking}节讨论的函数，在图~\ref{fig:scheduling}中可视化它们，并在表~\ref{tab:ablation}中总结结果。
 
-We observe that concave functions generally obtain better FID and IS than linear, followed by the convex functions. While cosine and square perform similarly relative to other functions, cosine slightly edges out square in all scores, making cosine the default in our model.
+我们观察到凹函数通常获得比线性更好的FID和IS，其次是凸函数。虽然余弦和平方相对于其他函数表现相似，但余弦在所有得分上都略微超越平方，使余弦成为我们模型的默认值。
 
-We hypothesize that concave functions perform favorably because they 1) challenge training with more difficult cases (\ie encouraging larger mask ratios), and 2) appropriately prioritize the less-to-more prediction throughout the decoding.
-That said, over-prioritization seems to be costly as well, as shown by the cubic function being worse than square, and exponential being much worse than all other concave functions.
+我们假设凹函数表现出色是因为它们1）通过更困难的情况来挑战训练（即鼓励更大的掩盖比例），2）在整个解码过程中适当地优先考虑从少到多的预测。
+也就是说，过度优先化似乎也是有代价的，如三次函数比平方差和指数函数比所有其他凹函数差得多所示。
 
 \input{figures/ablation_2}
 
-\noindent{\textbf{Iteration number.}}
-We study the effect of the number of iterations ($T$) on our model by running all candidate masking functions with different $T$s. As shown in Figure~\ref{fig:scheduling}, under the same setting, more iterations are not necessarily better: as $T$ increases, aside from the logarithmic function which performs poorly throughout, all other functions hit a ``sweet spot" where the model's performance peaks before it worsens again. The sweet spot also gets ``delayed" as functions get less concave. As shown, among functions that achieve strong FIDs (\ie cosine, square, and linear), cosine not only has the strongest overall score, but also the earliest sweet spot at a total of $8$ to $12$ iterations.
-We hypothesize that such sweet spots exist because too many iterations may discourage the model from keeping less confident predictions, which worsens the token diversity. We think further study on the masking design would be interesting for future work.
+\noindent{\textbf{迭代次数。}}
+我们通过用不同的$T$运行所有候选掩盖函数来研究迭代次数（$T$）对我们模型的影响。如图~\ref{fig:scheduling}所示，在相同设置下，更多迭代不一定更好：随着$T$增加，除了在整个过程中表现不佳的对数函数外，所有其他函数都达到了``甜点''，其中模型性能在恶化前达到峰值。随着函数变得不那么凹，``甜点''也会``延迟''。如所示，在实现强FID的函数中（即余弦、平方和线性），余弦不仅有最强的总体得分，而且在总共8到12个迭代处有最早的甜点。
+我们假设这样的甜点存在是因为太多迭代可能会阻止模型保留较低信心的预测，这会恶化token多样性。我们认为对掩盖设计的进一步研究对于未来的工作会很有趣。

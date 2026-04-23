@@ -1,8 +1,16 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
+\usepackage{xeCJK}
+\usepackage{setspace}
 \usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
 
-\pdfoutput=1
+\setCJKmainfont[BoldFont=FZHei-B01,ItalicFont=FZKai-Z03]{FZShuSong-Z01}
+\newCJKfontfamily\kaitifont[BoldFont=FZHei-B01]{FZKai-Z03}
+\newcommand{\kaiti}{{\kaitifont\spacing{1.2}}}
+\setstretch{1.5}
+\DeclareCaptionFont{kaiti}{\kaiti}
+\captionsetup{font+=kaiti}
+\captionsetup[sub]{font+=kaiti}
 
 % Include other packages here, before hyperref.
 \usepackage{graphicx}
@@ -57,12 +65,12 @@
     \vspace{-8mm}
     \includegraphics[width=\teaserwidth]{figures/teaser1.pdf}
     \vspace{-6mm}
-    \captionof{figure}{\textbf{Example generation by MaskGIT on image synthesis and manipulation tasks}. We show that MaskGIT is a flexible model that can generate high-quality samples on (a) class-conditional synthesis, (b) class-conditional image manipulation, \eg replacing selected objects in the bounding box with ones from the given classes, and (c) image extrapolation. Examples shown here have resolutions 512$\times$512, 512$\times$512, and 512$\times$2560 in the three columns, respectively. Zoom in to see the details.} 
+    \captionof{figure}{\textbf{MaskGIT在图像合成和处理任务上的生成示例}。我们展示了MaskGIT是一个灵活的模型，可以在以下任务上生成高质量的样本：(a)类别条件合成，(b)类别条件图像处理（例如将边界框内的选定对象替换为给定类别中的对象），以及(c)图像外推。这里显示的示例在三列中的分辨率分别为512$\times$512、512$\times$512和512$\times$2560。放大查看详细信息。} 
     \vspace{1mm}
 	\label{fig:teaser}
 \end{center}%
 }]
-\footnotetext{$^\ast$ Currently affiliated with Microsoft Azure AI.}
+\footnotetext{$^\ast$目前隶属于微软 Azure AI。}
 
 
 \input{0_abstract}
