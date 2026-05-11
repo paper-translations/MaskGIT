@@ -4,7 +4,7 @@
     \vspace{-3mm}
 	\includegraphics[width=.9\textwidth]{figures/iterative_decoding.pdf}
     \vspace{-3mm}
-    \caption{\textbf{顺序解码与 \model 按调度的平行解码的比较。}第 1 和 3 行是每次迭代时的输入隐层掩码，第 2 和 4 行是每个模型在该迭代时生成的样本。我们的解码从所有未知代码开始（用浅灰色标记），并逐步用越来越多的并行分散预测填充隐层表示（用深灰色标记），其中预测的 token 数量在迭代过程中急剧增加。\model 在 8 次迭代中完成解码，而顺序方法需要 256 轮。}
+    \caption{\textbf{顺序解码与 \model  按调度的平行解码的比较。}第 1 和 3 行是每次迭代时的输入隐层掩码，第 2 和 4 行是每个模型在该迭代时生成的样本。我们的解码从所有未知代码开始（用浅灰色标记），并逐步用越来越多的并行分散预测填充隐层表示（用深灰色标记），其中预测的 token 数量在迭代过程中急剧增加。\model  在 8 次迭代中完成解码，而顺序方法需要 256 轮。}
     \label{fig:decoding}
 \vspace{-3mm}
 \end{figure*}
