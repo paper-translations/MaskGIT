@@ -42,10 +42,10 @@
     \item \textbf{掩码调度。}我们根据掩码调度函数$\gamma$计算要掩码的token数量，即$n = \lceil \gamma(\frac{t}{T}) N \rceil$，其中$N$是输入长度，$T$是迭代总数。
     \item \textbf{掩码。}我们通过掩码$Y_\unknownmask^{(t)}$中的$n$个token来获得$Y_\unknownmask^{(t+1)}$。迭代$t+1$的掩码$\unknownmask^{(t+1)}$计算为：\vspace{-2mm}
         \begin{equation*}
-         m_{i}^{(t+1)} =
+         m_{i}^{(t+1)} = 
         \begin{cases}
-            1,  & \text{如果$c_i < {\text{sorted}}_j(c_j)[n]$。}\\
-            0,  & \text{否则。}\vspace{-2mm}
+            1,  & \text{if $c_i < {\text{sorted}}_j(c_j)[n]$.}\\
+            0,  & \text{otherwise.}\vspace{-2mm}
         \end{cases},
         \end{equation*}
     其中$c_i$是第$i$个token的信心得分。
