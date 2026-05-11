@@ -24,7 +24,7 @@
 \mathcal{L}_{\text{mask}} = - \mathop{\mathbb{E}} \limits_{\mathy  \in \mathcal{D}} \Big[ \sum_{\forall i \in [1,N], m_i=1} \log p(y_i| Y_{\knownmask}) \Big],
 \end{equation}
 
-\noindent 具体地，我们将掩码的$Y_{\knownmask}$输入到多层双向Transformer中，以预测每个掩码token的概率$P(y_i | Y_{\knownmask} )$，其中负对数似然计算为地面真实独热token和预测token之间的交叉熵。
+\noindent 具体地，我们将掩码的$Y_{\knownmask}$输入到多层双向Transformer中，以预测每个掩码token的概率$P(y_i | Y_{\knownmask} )$，其中负对数似然计算为真值独热token和预测token之间的交叉熵。
 注意与自回归建模的关键区别：MVTM中的条件依赖有两个方向，这允许图像生成通过关注图像中的所有token来利用更丰富的上下文。
 
 \subsection{迭代解码}

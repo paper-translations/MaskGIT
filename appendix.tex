@@ -42,7 +42,7 @@
 
 \suppsection{与最先进的基于Transformer的方法的图像外推比较}
 \label{sec:supp_outpainting_comparison_with_transformers}
-在图~\ref{fig:supp_uncropgpt-1}和\ref{fig:supp_uncropgpt-2}中，我们展示了\model 、ImageGPT~\cite{chen2020imagegpt}和VQGAN~\cite{Esser21vqgan}之间的一些外推比较。在每组图像中，我们展示了地面真实（左边）、仅使用地面真实上半部分的外推样本（中间）和仅使用地面真实下半部分的外推样本（右边）。
+在图~\ref{fig:supp_uncropgpt-1}和\ref{fig:supp_uncropgpt-2}中，我们展示了\model 、ImageGPT~\cite{chen2020imagegpt}和VQGAN~\cite{Esser21vqgan}之间的一些外推比较。在每组图像中，我们展示了真值（左边）、仅使用真值上半部分的外推样本（中间）和仅使用真值下半部分的外推样本（右边）。
 
 \model 和VQGAN都可以通过利用分词在更高分辨率上执行，从而实现比在最高分辨率$192\times192$上运行的ImageGPT更高的样本保真度。同时，\model 相对于ImageGPT和VQGAN展示了更强的灵活性，因为它可以在任意方向上外推（例如向上和向下），而由于它们的自回归性质，ImageGPT和VQGAN只能用单个模型在一个方向上处理外推。
 
