@@ -13,7 +13,7 @@
 \newcommand{\unknownmask}[0]{{\mathbf{M}}}
 \newcommand{\mathy}[0]{{\mathbf{Y}}}
 \newcommand{\knownmask}[0]{{\overline{\mathbf{M}}}}
-设$\mathy=[y_i]_{i=1}^N$表示通过将图像输入VQ编码器得到的潜在token，其中$N$是重塑token矩阵的长度，$\unknownmask=[m_i]_{i=1}^N$是相应的二进制掩码。在训练期间，我们采样token的子集并用特殊的\texttt{[MASK]}token替换它们。如果$m_i=1$，token $y_i$被替换为\texttt{[MASK]}，否则当$m_i=0$时，$y_i$保持不变。
+设$\mathy=[y_i]_{i=1}^N$表示通过将图像输入VQ编码器得到的潜在token，其中$N$是重塑token矩阵的长度，$\unknownmask=[m_i]_{i=1}^N$是相应的二进制掩码。在训练期间，我们采样token的子集并用特殊的\texttt{[MASK]} token替换它们。如果$m_i=1$，token $y_i$被替换为\texttt{[MASK]}，否则当$m_i=0$时，$y_i$保持不变。
 
 采样程序由掩码调度函数$\gamma (r) \in (0,1]$参数化，执行如下：我们首先从0到1采样一个比例，然后在$\mathy$中均匀选择$\lceil \gamma(r) \cdot N \rceil$个token来放置掩码，其中$N$是长度。掩码调度显著影响图像生成的质量，将在第\ref{ssec:masking}节讨论。
 
@@ -31,7 +31,7 @@
 \label{ssec:decoding}
 在自回归解码中，token基于先前生成的输出顺序生成。这个过程不可并行化，因此对于图像来说非常慢，因为图像token长度（例如256或1024）通常远大于语言的长度。我们引入了一种新型解码方法，其中图像中的所有token同时并行生成。这由于MTVM的双向自注意力而可行。
 
-理论上，我们的模型能够在单个通道中推断所有token并生成整个图像。我们发现这与训练任务的不一致具有挑战性。下面介绍提议的迭代解码。
+理论上，我们的模型能够在单次推理中推断所有token并生成整个图像。我们发现这与训练任务的不一致具有挑战性。下面介绍提议的迭代解码。
 在推理时生成图像，我们从所有token都被掩码的空白画布开始，即$Y_\unknownmask^{(0)}$。对于迭代$t$，我们的算法执行如下：
 
  \vspace{-2mm}
