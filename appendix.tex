@@ -5,12 +5,12 @@
 \suppsection{关于图像重建的讨论}
 \label{sec:supp_reconstruction_discussion}
 
-在第\ref{ssec:class_conditional_synthesis}节中，我们主要在类条件图像生成任务上评估\model 。这里我们提供了关于其在图像重建上的性能的更多讨论。我们首先随机采样输入掩码$M$，掩码比例$r$为被掩码的视觉token，然后运行\model 的迭代解码算法来重建图像。图~\ref{fig:analysis_psnr}展示了重建样本的PSNR和LPIPS~\cite{zhang2018lpips}作为$r$的函数，而图~\ref{fig:supp_reconstruction}可视化了这个过程的两个例子，$r$范围从$95\%$到$75\%$。
+在第\ref{ssec:class_conditional_synthesis}节中，我们主要在类条件图像生成任务上评估\model 。这里我们提供了关于其在图像重建上的性能的更多讨论。我们首先随机采样输入掩码 $M$，掩码比例 $r$ 为被掩码的视觉 token，然后运行\model 的迭代解码算法来重建图像。图~\ref{fig:analysis_psnr}展示了重建样本的 PSNR 和 LPIPS~\cite{zhang2018lpips}作为 $r$ 的函数，而图~\ref{fig:supp_reconstruction}可视化了这个过程的两个例子，$r$ 范围从 $95\%$ 到 $75\%$。
 
 
-我们观察到即使有非常高比例（例如95\%）的token被掩码，\model 也能重建整体信息（例如前景对象的姿态和形状）。更重要的是，似乎存在一个约90\%的拐点：虽然重建质量和一致性在掩码比例降低到90\%之前大幅改进，但在90\%之后进一步的改进放缓了。这个观察在图~\ref{fig:supp_reconstruction}中从95\%到90\%的重建样本和原始图像之间的视觉相似性的大跳跃中得到了证实，例如老虎前面的围栏和汽车的颜色一旦掩码比例低于90\%就被一致地捕捉到，但在95\%时没有被捕捉到。
+我们观察到即使有非常高比例（例如 95\%）的 token 被掩码，\model 也能重建整体信息（例如前景对象的姿态和形状）。更重要的是，似乎存在一个约 90\%的拐点：虽然重建质量和一致性在掩码比例降低到 90\%之前大幅改进，但在 90\%之后进一步的改进放缓了。这个观察在图~\ref{fig:supp_reconstruction}中从 95\%到 90\%的重建样本和原始图像之间的视觉相似性的大跳跃中得到了证实，例如老虎前面的围栏和汽车的颜色一旦掩码比例低于 90\%就被一致地捕捉到，但在 95\%时没有被捕捉到。
 
-换句话说，我们发现视觉token具有高度的冗余性。对于整体重建，只有非常小的一部分（例如10\%）的token是必要的；其余的仅改进了对更精细外观或细节的恢复。这与我们在第\ref{ssec:masking}节中阐述的掩码设计背后的直觉相呼应，即前几个token的预测是图像生成的关键。类似的关于图像空间冗余的观察在并行工作MAE~\cite{he2021mae}中讨论。在他们的工作中，他们发现掩码输入图像的高比例会产生一个非平凡的且有意义的自监督任务来进行图像表示学习。
+换句话说，我们发现视觉 token 具有高度的冗余性。对于整体重建，只有非常小的一部分（例如 10\%）的 token 是必要的；其余的仅改进了对更精细外观或细节的恢复。这与我们在第\ref{ssec:masking}节中阐述的掩码设计背后的直觉相呼应，即前几个 token 的预测是图像生成的关键。类似的关于图像空间冗余的观察在并行工作 MAE~\cite{he2021mae}中讨论。在他们的工作中，他们发现掩码输入图像的高比例会产生一个非平凡的且有意义的自监督任务来进行图像表示学习。
 
 \input{figures/analysis_qd}
 
@@ -19,14 +19,14 @@
 
 在本节中，我们报告了关于类条件图像生成的额外结果。
 
-我们遵循先前的基于Transformer的方法~\cite{Razavi19vqvae2,Esser21vqgan}来采用基于分类器的拒绝采样来改进样本质量得分。具体地，我们使用预训练的ResNet分类器~\cite{ResNet}根据预测概率对输出样本进行评分，并保留接受率为$0.05$的样本，如VQGAN~\cite{Esser21vqgan}中所示。
-如表\ref{tab:supp_cc_classifier}所示，MaskGIT相对于VQGAN展示了一致的改进，并且与ADM配合分类器引导~\cite{dhariwal2021diffusion}相当。更重要的是，通过添加拒绝采样，\model 实现了最先进的Inception Scores（256$\times$256上为$355.6$，512$\times$512上为$342.0$）。
+我们遵循先前的基于 Transformer 的方法~\cite{Razavi19vqvae2,Esser21vqgan}来采用基于分类器的拒绝采样来改进样本质量得分。具体地，我们使用预训练的 ResNet 分类器~\cite{ResNet}根据预测概率对输出样本进行评分，并保留接受率为 $0.05$ 的样本，如 VQGAN~\cite{Esser21vqgan}中所示。
+如表\ref{tab:supp_cc_classifier}所示，MaskGIT 相对于 VQGAN 展示了一致的改进，并且与 ADM 配合分类器引导~\cite{dhariwal2021diffusion}相当。更重要的是，通过添加拒绝采样，\model 实现了最先进的 Inception Scores（256$\times$256 上为 $355.6$，512$\times$512 上为 $342.0$）。
 
 
 
-在表~\ref{tab:supp_cas}中，我们报告了使用Inception特性计算的精确度和召回得分~\cite{christian16inception}。与我们在表~\ref{tab:maintable}中报告的基于VGG~\cite{simonyan2015vgg}特性的得分相比，以便与先前工作进行更直接的比较~\cite{KynkaanniemiKLL19,dhariwal2021diffusion}，我们发现基于Inception特性的得分与我们的定性观察更一致，即VQGAN的样本比BigGAN的更多样化。在两个度量下，\model 的召回得分都超越了BigGAN和VQGAN的得分。我们也报告了在没有来自RandAugment~\cite{cubuk2019randaugment}的增强的分类器上评估的CAS。与我们的主要结果一致，\model 以很大的优势超越了BigGAN和我们的基线VQGAN。
+在表~\ref{tab:supp_cas}中，我们报告了使用 Inception 特性计算的精确度和召回得分~\cite{christian16inception}。与我们在表~\ref{tab:maintable}中报告的基于 VGG~\cite{simonyan2015vgg}特性的得分相比，以便与先前工作进行更直接的比较~\cite{KynkaanniemiKLL19,dhariwal2021diffusion}，我们发现基于 Inception 特性的得分与我们的定性观察更一致，即 VQGAN 的样本比 BigGAN 的更多样化。在两个度量下，\model 的召回得分都超越了 BigGAN 和 VQGAN 的得分。我们也报告了在没有来自 RandAugment~\cite{cubuk2019randaugment}的增强的分类器上评估的 CAS。与我们的主要结果一致，\model 以很大的优势超越了 BigGAN 和我们的基线 VQGAN。
 
-最后，我们在图~\ref{fig:supp_cc_diversity}、\ref{fig:supp_cc_diversity_1}和\ref{fig:supp_cc_diversity_2}中展示了\model 生成的类条件样本与BigGAN-deep和VQVAE-2生成的样本的一些比较。
+最后，我们在图~\ref{fig:supp_cc_diversity}、\ref{fig:supp_cc_diversity_1}和\ref{fig:supp_cc_diversity_2}中展示了\model 生成的类条件样本与 BigGAN-deep 和 VQVAE-2 生成的样本的一些比较。
 
 \input{figures/rebuttal_table}
 \input{figures/supp_cas_table}
@@ -40,25 +40,25 @@
 
 我们在图~\ref{fig:supp_editing}中展示了类条件图像编辑的更多例子，以及在图~\ref{fig:supp_panorama}中展示了图像条件全景合成的例子。 
 
-\suppsection{与最先进的基于Transformer的方法的图像外推比较}
+\suppsection{与最先进的基于 Transformer 的方法的图像外推比较}
 \label{sec:supp_outpainting_comparison_with_transformers}
-在图~\ref{fig:supp_uncropgpt-1}和\ref{fig:supp_uncropgpt-2}中，我们展示了\model 、ImageGPT~\cite{chen2020imagegpt}和VQGAN~\cite{Esser21vqgan}之间的一些外推比较。在每组图像中，我们展示了真值（左边）、仅使用真值上半部分的外推样本（中间）和仅使用真值下半部分的外推样本（右边）。
+在图~\ref{fig:supp_uncropgpt-1}和\ref{fig:supp_uncropgpt-2}中，我们展示了\model 、ImageGPT~\cite{chen2020imagegpt}和 VQGAN~\cite{Esser21vqgan}之间的一些外推比较。在每组图像中，我们展示了真值（左边）、仅使用真值上半部分的外推样本（中间）和仅使用真值下半部分的外推样本（右边）。
 
-\model 和VQGAN都可以通过利用分词在更高分辨率上执行，从而实现比在最高分辨率$192\times192$上运行的ImageGPT更高的样本保真度。同时，\model 相对于ImageGPT和VQGAN展示了更强的灵活性，因为它可以在任意方向上外推（例如向上和向下），而由于它们的自回归性质，ImageGPT和VQGAN只能用单个模型在一个方向上处理外推。
+\model 和 VQGAN 都可以通过利用分词在更高分辨率上执行，从而实现比在最高分辨率 $192\times192$ 上运行的 ImageGPT 更高的样本保真度。同时，\model 相对于 ImageGPT 和 VQGAN 展示了更强的灵活性，因为它可以在任意方向上外推（例如向上和向下），而由于它们的自回归性质，ImageGPT 和 VQGAN 只能用单个模型在一个方向上处理外推。
 
 \input{figures/supp_uncropgpt}
 \input{figures/supp_uncropgpt2}
 
-\suppsection{与最先进的基于GAN的方法的图像修复和外推比较}
+\suppsection{与最先进的基于 GAN 的方法的图像修复和外推比较}
 \label{sec:supp_inpainting_and_outpainting_comparison_with_gans}
 
-在本节中，我们在图~\ref{fig:supp_inpainting}和图~\ref{fig:supp_uncrop_comparison_right}中展示了与最先进的基于GAN的图像补全方法的更多定性比较。定量结果在第\ref{ssec:inpainting}节中已讨论。
+在本节中，我们在图~\ref{fig:supp_inpainting}和图~\ref{fig:supp_uncrop_comparison_right}中展示了与最先进的基于 GAN 的图像补全方法的更多定性比较。定量结果在第\ref{ssec:inpainting}节中已讨论。
 
-我们发现相比于先前的基于GAN的方法，\model 展示了更强的结构一致性完成能力，其样本包含的工件更少。在图~\ref{fig:supp_uncrop_comparison_right}中，\model 完成了第二行中的桥和倒数第二行中的建筑物，所有GAN方法相比之下都难以做到。
+我们发现相比于先前的基于 GAN 的方法，\model 展示了更强的结构一致性完成能力，其样本包含的工件更少。在图~\ref{fig:supp_uncrop_comparison_right}中，\model 完成了第二行中的桥和倒数第二行中的建筑物，所有 GAN 方法相比之下都难以做到。
 
 \input{figures/supp_inpaint_comparison}
 
-此外，我们在具有大掩码比例的图像补全任务上与CoModGAN进行比较，即分别条件于中心50$\%\times$50\%和中心31.25\%$\times$31.25\%，这对于传统GAN来说是具有挑战性的情况。例子如图~\ref{fig:supp_uncrop_comparison}所示。
+此外，我们在具有大掩码比例的图像补全任务上与 CoModGAN 进行比较，即分别条件于中心 50$\%\times$50\%和中心 31.25\%$\times$31.25\%，这对于传统 GAN 来说是具有挑战性的情况。例子如图~\ref{fig:supp_uncrop_comparison}所示。
 
 \input{figures/supp_uncrop_comparison}
 
