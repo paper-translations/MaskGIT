@@ -1,15 +1,10 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
-\usepackage{xeCJK}
-\usepackage{setspace}
 \usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
 
-\setCJKmainfont[BoldFont=FZHei-B01,ItalicFont=FZKai-Z03]{FZShuSong-Z01}
-\setstretch{1.2}
-\captionsetup{font={small,it,stretch=1.2}}
-\captionsetup[sub]{font={small,it,stretch=1.2}}
-
 % Include other packages here, before hyperref.
+\usepackage{xeCJK}
+\usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -19,10 +14,9 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{mathabx}
-\usepackage{dbfloatfix}
 \usepackage{anyfontsize}
 
-\usepackage[pagebackref,breaklinks,colorlinks,linkcolor=blue]{hyperref}
+\usepackage[pagebackref,breaklinks,colorlinks,linkcolor=blue,hyperfootnotes=false]{hyperref}
 
 
 % Support for easy cross-referencing
@@ -31,6 +25,21 @@
 \Crefname{section}{Section}{Sections}
 \Crefname{table}{Table}{Tables}
 \crefname{table}{Tab.}{Tabs.}
+
+\setCJKmainfont[
+  BoldFont=FZHei-B01,
+  ItalicFont=FZKai-Z03,
+  BoldItalicFont=FZFangSong-Z02,
+  SmallCapsFont=FZShuSong-Z01
+]{FZShuSong-Z01}
+\setCJKsansfont[AutoFakeBold=1.2, AutoFakeSlant=0.15]{FZHei-B01}
+\setCJKmonofont[AutoFakeBold=1.2, AutoFakeSlant=0.15]{FZHei-B01}
+\setmainfont{Times New Roman}
+\setmonofont[AutoFakeBold=1.2]{LMMono10}
+\setstretch{1.2}
+\captionsetup{font={small,it,stretch=1.2}}
+\let\oldfootnotesize\footnotesize
+\renewcommand{\footnotesize}{\oldfootnotesize\itshape}
 
 \begin{document}
 \def\model {MaskGIT\xspace}
